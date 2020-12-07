@@ -18,6 +18,8 @@ Entity::~Entity() {
 	}
 }
 
+// test test test
+
 // Gets the name of the Entity.
 string Entity::getName() {
 	return name;
