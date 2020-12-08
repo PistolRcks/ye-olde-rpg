@@ -4,6 +4,7 @@
 #define ENTITY_H
 
 #include <string>
+#include <iostream>
 #include "Weapon.h"
 
 using namespace std;
@@ -36,6 +37,12 @@ public:
 	void takeDamage(int damage); // semi-related
 
 	EntityState getState();
+
+	Weapon* getWeapon(int inventoryIndex);
+	void equipWeapon(int inventoryIndex);
+
+	// Other methods
+	void makeAttack();
 };
 #endif
 

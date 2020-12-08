@@ -9,10 +9,13 @@ Entity::Entity(string name, int maxHP, void (*onDeathEffect)()) {
 	this->name = name;
 	this->maxHP = maxHP;
 	currentHP = maxHP;
+
 	currentWeapon = 0;
 	for (int i = 0; i < 5; i++) { // Set Weapon pointers to nullptr when we initialize
 		inventory[i] = nullptr;
 	}
+
+	onDeath = onDeathEffect;
 }
 
 // Destructor for the Entity class
@@ -66,5 +69,25 @@ void Entity::takeDamage(int damage) {
 // Gets the current state of the Entity (ALIVE, DEAD, or SOMEWHERE_IN_BETWEEN).
 EntityState Entity::getState() {
 	return state;
+}
+
+// Gets the Weapon pointer at the specified inventory index.
+Weapon* Entity::getWeapon(int inventoryIndex) {
+	return inventory[inventoryIndex];
+}
+
+// Changes the current Weapon to the weapon at the specified inventory index. Won't switch to inventory indices which contain null pointers (i.e. those which are empty).
+void Entity::equipWeapon(int inventoryIndex) {
+	if (inventory[inventoryIndex] != nullptr) {
+		currentWeapon = inventoryIndex;
+	} 
+	else {
+		cout << "Can't switch weapon to nothing!" << endl;
+	}
+}
+
+// Makes an attack with the currently equipped weapon. Alias for inventory[currentWeapon]->makeAttack().
+void Entity::makeAttack() {
+	inventory[currentWeapon]->makeAttack();
 }
 
