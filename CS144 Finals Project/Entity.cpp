@@ -88,6 +88,6 @@ void Entity::equipWeapon(int inventoryIndex) {
 
 // Makes an attack with the currently equipped weapon. Alias for inventory[currentWeapon]->makeAttack().
 void Entity::makeAttack() {
-	inventory[currentWeapon]->makeAttack();
+	//inventory[currentWeapon]->makeAttack();
 }
 
