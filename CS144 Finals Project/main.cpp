@@ -26,7 +26,7 @@ int main() {
 	cout << "*--------------------------------------*" << endl << endl;
 
 	// Ask for the player's name (making sure that cin doesn't break)
-	while (cin.fail()) {
+	do {
 		cout << "Please enter your name: ";
 		getline(cin, playerName);
 		if (cin.fail()) { // If the input is wack
@@ -34,7 +34,7 @@ int main() {
 			cin.clear();
 			cout << endl << "Excuse me?!? Let's try that again." << endl;
 		}
-	}
+	} while (cin.fail());
 
 	cout << "Thine weapon, sire... its name is " << starterWeapon.getName() << endl;
 	// Main Game Loop
