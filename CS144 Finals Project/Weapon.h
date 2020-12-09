@@ -4,7 +4,9 @@
 #define WEAPON_H
 
 #include <string>
+#include <vector>
 #include <stdlib.h>
+#include "Entity.h"
 
 using namespace std;
 
@@ -48,8 +50,14 @@ static string weaponDescriptors[10] = {
 	""
 };
 
+
 class Weapon {
 private:
+	struct WeaponEffect {
+		void (*effect)();
+		string description = "";
+	};
+
 	// Metadata
 	string name;
 	int worth;
@@ -59,11 +67,15 @@ private:
 	int critPercent;
 	int damageBounds[2];
 
+	// Other stats attributed to a Weapon
+	int armor;
+	int speed;
+
+	Entity* bearer; // The bearer of the Weapon
+
 	// Effects
-	void (*onHit)();
-	string onHitDescription = "";
-	void (*onCrit)();
-	string onCritDescription = "";
+	vector<WeaponEffect> onHitEffects;
+	vector<WeaponEffect> onCritEffects;
 public:
 	// Constructors
 	Weapon(int worth);

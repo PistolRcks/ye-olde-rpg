@@ -4,8 +4,9 @@
  * @param `string` name - The name of the Entity.
  * @param `int` maxHP - The maximum hit points (better known as health) of the Entity. `currentHP` will also be set to this value.
  * @oaram `void (*func)()` onDeathEffect - The function to call when the entity dies.
+ * @param `void (*func)()` onTurnStartEffect - The function to call when the Entity starts its turn--most of the time, this will provide AI
  */
-Entity::Entity(string name, int maxHP, void (*onDeathEffect)()) {
+Entity::Entity(string name, int maxHP, void (*onDeathEffect)(), void (*onTurnStartEffect)()) {
 	this->name = name;
 	this->maxHP = maxHP;
 	currentHP = maxHP;
@@ -16,6 +17,7 @@ Entity::Entity(string name, int maxHP, void (*onDeathEffect)()) {
 	}
 
 	onDeath = onDeathEffect;
+	onTurnStart = onTurnStartEffect;
 }
 
 // Destructor for the Entity class

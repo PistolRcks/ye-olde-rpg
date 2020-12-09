@@ -22,9 +22,10 @@ private:
 	int currentWeapon; // The index of the currently equipped Weapon.
 
 	void (*onDeath)(); // A function pointer to the effect which will proc on death of the Entity.
+	void (*onTurnStart)(); // A function pointer to the effect which will proc upon the start of a turn
 public:
 	// Constructors
-	Entity(string name, int maxHP, void (*onDeathEffect)());
+	Entity(string name, int maxHP, void (*onDeathEffect)(), void (*onTurnStartEffect)());
 	~Entity();
 
 	// Getters/Setters
