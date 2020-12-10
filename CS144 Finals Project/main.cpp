@@ -36,7 +36,11 @@ int main() {
 		}
 	} while (cin.fail());
 
-	cout << "May your journey fare well, Sir " << playerName << "." << endl;
+	Entity player(playerName, 200, starterWeapon);
+
+	cout << "May thine journey fare thee well, Sir " << player.getName() << "." << endl;
+
+
 	//   -- Main Game Loop --   //
 	//   -- Outro Sequence --   //
 	return 0;

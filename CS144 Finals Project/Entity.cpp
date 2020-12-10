@@ -3,18 +3,16 @@
 /* Main costructor for the Entity class.
  * @param `string` name - The name of the Entity.
  * @param `int` maxHP - The maximum hit points (better known as health) of the Entity. `currentHP` will also be set to this value.
- * @oaram `void (*func)()` onDeathEffect - The function to call when the entity dies.
- * @param `void (*func)()` onTurnStartEffect - The function to call when the Entity starts its turn--most of the time, this will provide AI
+ * @param `Weapon*` weaponToEquip - The Weapon to equip to the Entity. (Optional)
+ * @oaram `void (*func)()` onDeathEffect - The function to call when the Entity dies. (Optional)
+ * @param `void (*func)()` onTurnStartEffect - The function to call when the Entity starts its turn--most of the time, this will provide AI. ((Optional)
  */
-Entity::Entity(string name, int maxHP, void (*onDeathEffect)(), void (*onTurnStartEffect)()) {
+Entity::Entity(string name, int maxHP, Weapon* weaponToEquip, void (*onDeathEffect)(), void (*onTurnStartEffect)()) {
 	this->name = name;
 	this->maxHP = maxHP;
 	currentHP = maxHP;
 
-	currentWeapon = 0;
-	for (int i = 0; i < 5; i++) { // Set Weapon pointers to nullptr when we initialize
-		inventory[i] = nullptr;
-	}
+	equippedWeapon = weaponToEquip;
 
 	onDeath = onDeathEffect;
 	onTurnStart = onTurnStartEffect;
@@ -22,11 +20,7 @@ Entity::Entity(string name, int maxHP, void (*onDeathEffect)(), void (*onTurnSta
 
 // Destructor for the Entity class
 Entity::~Entity() {
-	for (int i = 0; i < 5; i++) { // Delete weapon pointers in inventory
-		if (inventory[i] != nullptr) { // Safety check
-			delete inventory[i];
-		}
-	}
+	delete equippedWeapon;
 }
 
 // Gets the name of the Entity.
@@ -73,19 +67,15 @@ EntityState Entity::getState() {
 	return state;
 }
 
-// Gets the Weapon pointer at the specified inventory index.
-Weapon* Entity::getWeapon(int inventoryIndex) {
-	return inventory[inventoryIndex];
+// Gets a pointer to the currently equipped Weapon
+Weapon* Entity::getEquippedWeapon() {
+	return equippedWeapon;
 }
 
-// Changes the current Weapon to the weapon at the specified inventory index. Won't switch to inventory indices which contain null pointers (i.e. those which are empty).
-void Entity::equipWeapon(int inventoryIndex) {
-	if (inventory[inventoryIndex] != nullptr) {
-		currentWeapon = inventoryIndex;
-	} 
-	else {
-		cout << "Can't switch weapon to nothing!" << endl;
-	}
+// Equips a Weapon. The previously eqiupped Weapon (if there is one) will be deleted.
+void Entity::setEquippedWeapon(Weapon* weapon) {
+	if (equippedWeapon != nullptr) { delete equippedWeapon; }
+	equippedWeapon = weapon;
 }
 
 // Makes an attack with the currently equipped weapon. Alias for inventory[currentWeapon]->makeAttack().

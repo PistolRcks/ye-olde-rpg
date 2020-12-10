@@ -20,14 +20,13 @@ private:
 	int maxHP; // The maximum HP of the entity
 	int currentHP; // The current HP of the entity
 	EntityState state = ALIVE; // State of the entity (enums are unscoped but we won't name anything else ALIVE, DEAD or SOMEWHERE_IN_BETWEEN)
-	Weapon* inventory[5]; // An array of pointers to Weapons.
-	int currentWeapon; // The index of the currently equipped Weapon.
+	Weapon* equippedWeapon; // The index of the currently equipped Weapon.
 
 	void (*onDeath)(); // A function pointer to the effect which will proc on death of the Entity.
 	void (*onTurnStart)(); // A function pointer to the effect which will proc upon the start of a turn
 public:
 	// Constructors
-	Entity(string name, int maxHP, void (*onDeathEffect)(), void (*onTurnStartEffect)());
+	Entity(string name, int maxHP, Weapon* weaponToEquip = nullptr, void (*onDeathEffect)() = nullptr, void (*onTurnStartEffect)() = nullptr);
 	~Entity();
 
 	// Getters/Setters
@@ -41,8 +40,8 @@ public:
 
 	EntityState getState();
 
-	Weapon* getWeapon(int inventoryIndex);
-	void equipWeapon(int inventoryIndex);
+	Weapon* getEquippedWeapon();
+	void setEquippedWeapon(Weapon* weapon);
 
 	// Methods
 	void makeAttack();
