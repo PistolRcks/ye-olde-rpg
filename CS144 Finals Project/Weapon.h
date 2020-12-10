@@ -5,6 +5,8 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
+#include <iomanip>
 #include <stdlib.h>
 #include "Entity.h"
 
@@ -50,13 +52,17 @@ static string weaponDescriptors[10] = {
 	""
 };
 
+class Entity; // Forward declaration required to resolve circular dependency
+
+struct WeaponEffect {
+	void (*effect)(Entity*); // The effect the weapon will proc. The parameter is a pointer to the target Entity of the effect.
+	string description = ""; // A description of the weapon's effect.
+	string target = "self"; // The target who will be affected by the effect (either "self" or "opponent").
+};
 
 class Weapon {
 private:
-	struct WeaponEffect {
-		void (*effect)();
-		string description = "";
-	};
+	friend struct WeaponEffect;
 
 	// Metadata
 	string name;
@@ -71,8 +77,6 @@ private:
 	int armor;
 	int speed;
 
-	Entity* bearer; // The bearer of the Weapon
-
 	// Effects
 	vector<WeaponEffect> onHitEffects;
 	vector<WeaponEffect> onCritEffects;
@@ -82,6 +86,12 @@ public:
 
 	// Getters/Setters
 	string getName();
+
+	// Methods
+	void showStats();
+
+	// Operators
+	friend ostream& operator<<(ostream& out, Weapon& weapon);
 };
 #endif
 

@@ -36,7 +36,7 @@ int main() {
 		}
 	} while (cin.fail());
 
-	cout << "Thine weapon, Sir " << playerName << "... its name is " << starterWeapon->getName() << endl;
+	cout << "May your journey fare well, Sir " << playerName << "." << endl;
 	//   -- Main Game Loop --   //
 	//   -- Outro Sequence --   //
 	return 0;

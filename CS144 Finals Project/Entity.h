@@ -12,6 +12,8 @@ using namespace std;
 // Enumeration for the alive/dead state of the Entity
 enum EntityState {ALIVE, DEAD, SOMEWHERE_IN_BETWEEN};
 
+class Weapon; // Forward declaration required to resolve circular dependency5
+
 class Entity {
 private:
 	string name; // The name of the entity
@@ -42,7 +44,7 @@ public:
 	Weapon* getWeapon(int inventoryIndex);
 	void equipWeapon(int inventoryIndex);
 
-	// Other methods
+	// Methods
 	void makeAttack();
 };
 #endif
