@@ -38,7 +38,8 @@ int main() {
 
 	Entity player(playerName, 200, starterWeapon);
 
-	cout << "May thine journey fare thee well, Sir " << player.getName() << "." << endl;
+	cout << "May thine journey fare thee well, Sir " << player << "." << endl;
+
 
 
 	//   -- Main Game Loop --   //

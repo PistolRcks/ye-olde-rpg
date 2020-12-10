@@ -83,3 +83,8 @@ void Entity::makeAttack() {
 	//inventory[currentWeapon]->makeAttack();
 }
 
+// Writes the name of the Entity to an ostream. Alias for Entity::getName().
+ostream& operator<<(ostream& out, Entity& entity) {
+	out << entity.name;
+	return out;
+}

@@ -45,6 +45,9 @@ public:
 
 	// Methods
 	void makeAttack();
+
+	// Operators
+	friend ostream& operator<<(ostream& out, Entity& entity);
 };
 #endif
 
