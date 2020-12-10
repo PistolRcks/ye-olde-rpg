@@ -36,9 +36,9 @@ int main() {
 		}
 	} while (cin.fail());
 
-	Entity player(playerName, 200, starterWeapon);
+	Entity* player = new Entity(playerName, 200, starterWeapon);
 
-	cout << "May thine journey fare thee well, Sir " << player << "." << endl;
+	cout << "May thine journey fare thee well, Sir " << (*player) << "." << endl;
 
 
 

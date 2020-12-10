@@ -14,6 +14,8 @@ Weapon::Weapon(int worth) {
 	name = "The " + adjective + " " + type + descriptor;
 	this->worth = worth;
 
+	bearer = nullptr;
+
 	// Starter stats -- Weapon stats will never go below this
 	hitPercent = 50;
 	critPercent = 0;
@@ -44,21 +46,39 @@ Weapon::Weapon(int worth) {
 			armor += (rand() % 8) + 1;
 		}
 		else if (randChoice < 95) {						// (85-94%) Increase critical hit chance by 5-10%
+			if (critPercent >= 100) { // If we already maxed out the critpercent
+				i--;
+				continue;
+			}
 			critPercent += (rand() % 6) + 5;
 		}
 		else if (randChoice < 99) {						// (95-98%) Increase all stats by 1d4
 			hitPercent += (rand() % 4) + 1;
-
 		}
-		else if (randChoice < 100) {					// (99-100%) Add an on-crit or on-hit effect
+		else if (randChoice < 100) {					// (99-100%) Add an on-hit effect
 			// TODO: Make effects
 		}
 	}
 }
 
-// Gets the name of the weapon.
+// Gets the name of the Weapon.
 string Weapon::getName() {
 	return name;
+}
+
+// Gets the armor of the Weapon.
+int Weapon::getArmor() {
+	return armor;
+}
+
+// Gets the speed of the Weapon.
+int Weapon::getSpeed() {
+	return speed;
+}
+
+// Sets the bearer of the Weapon (i.e. the Entity which has this weapon equipped). This is used for effects.
+void Weapon::setBearer(Entity* target) {
+	bearer = target;
 }
 
 // Pretty-prints Weapon statistics to cout.
@@ -74,8 +94,42 @@ void Weapon::showStats() {
 	cout << setw(midWidth) << "Armor | " << left << armor << " (Armor reduces damage)" << endl << right;
 	cout << setw(midWidth) << "Speed | " << left << armor << " (Speed determines how fast you attack and who attacks first)" << endl << right;
 
-	// TODO: Add in effects
+	// TODO: Add in effect text
 }
+
+// Makes an attack with the Weapon at the target Entity.
+void Weapon::makeAttack(Entity* target) {
+	if (((rand() % 100) + 1) < hitPercent) { // If it hits...
+		int dmgRange = damageBounds[1] - damageBounds[0];
+		int damage = (rand() % dmgRange) + damageBounds[0] + 1; // Record damage
+
+		if (((rand() % 100) + 1) < critPercent) { // If it crits...
+			damage *= 2;						  // Multiply the damage by two
+			target->takeDamage(damage);
+			cout << "CRIT! " << (*this) << " comes down with a mighty strike, dealing " << damage << " DMG!" << endl;
+		}
+		else {
+			target->takeDamage(damage);
+			cout << (*this) << " lands a blow on its foe, dealing " << damage << " DMG!" << endl;
+		}
+
+		if (onHitEffects.size() > 0) { // If there's an on-hit effect...
+			for (unsigned int i = 0; i < onHitEffects.size(); i++) { // Proc all effects
+				if (onHitEffects[i].target == "self") { // If it affects the bearer...
+					onHitEffects[i].effect(bearer);
+				} 
+				else { // If it affects the target being attacked...
+					onHitEffects[i].effect(target);
+				}
+			}
+		}
+	}
+	else {
+		cout << (*this) << " completely whiffed its attack..." << endl;
+	}
+}
+
+
 
 // Streams the name of the Weapon to an ostream (alias of Weapon::getName()).
 ostream& operator<<(ostream& out, Weapon& weapon) {

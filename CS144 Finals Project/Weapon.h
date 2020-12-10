@@ -67,6 +67,7 @@ private:
 	// Metadata
 	string name;
 	int worth;
+	Entity* bearer;
 
 	// Attack stats
 	int hitPercent;
@@ -79,16 +80,19 @@ private:
 
 	// Effects
 	vector<WeaponEffect> onHitEffects;
-	vector<WeaponEffect> onCritEffects;
 public:
 	// Constructors
 	Weapon(int worth);
 
 	// Getters/Setters
 	string getName();
+	int getArmor();
+	int getSpeed();
+	void setBearer(Entity* target);
 
 	// Methods
 	void showStats();
+	void makeAttack(Entity* target);
 
 	// Operators
 	friend ostream& operator<<(ostream& out, Weapon& weapon);

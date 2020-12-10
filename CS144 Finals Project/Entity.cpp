@@ -76,11 +76,12 @@ Weapon* Entity::getEquippedWeapon() {
 void Entity::setEquippedWeapon(Weapon* weapon) {
 	if (equippedWeapon != nullptr) { delete equippedWeapon; }
 	equippedWeapon = weapon;
+	weapon->setBearer(this);
 }
 
 // Makes an attack with the currently equipped weapon. Alias for inventory[currentWeapon]->makeAttack().
-void Entity::makeAttack() {
-	//inventory[currentWeapon]->makeAttack();
+void Entity::makeAttack(Entity* target) {
+	equippedWeapon->makeAttack(target);
 }
 
 // Writes the name of the Entity to an ostream. Alias for Entity::getName().

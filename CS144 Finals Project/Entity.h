@@ -44,7 +44,7 @@ public:
 	void setEquippedWeapon(Weapon* weapon);
 
 	// Methods
-	void makeAttack();
+	void makeAttack(Entity* target);
 
 	// Operators
 	friend ostream& operator<<(ostream& out, Entity& entity);
