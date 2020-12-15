@@ -9,6 +9,46 @@ int maximum(int a, int b) { // I am not going to include another header for max(
  *****************/
 WeaponEffect weaponEffectsArray[3];
 
+// This WeaponEffect heals the wielder for 5% of its maxHealth.
+void vampirismEffect(Weapon* ownerWeapon, Entity* target) {
+	if ((rand() % 100) < 25) { // 25% chance to proc
+		cout << (*ownerWeapon) << "'s effect, Vampirism, activates to heal its user!" << endl;
+		target->takeDamage(target->getMaxHP() * -0.05); // Negative damage is the same as healing
+	}
+}
+
+// This WeaponEffect has a 15% chance to activate a GigaCrit, which deals max damage * 4.
+void gigaCritEffect(Weapon* ownerWeapon, Entity* target) {
+	if ((rand() % 100) < 15) { // 15% chance to proc
+		cout << "A holy light shines upon " << (*ownerWeapon) << "! A GigaCrit smites " << (*target) << "!" << endl;
+		target->takeDamage(ownerWeapon->damageBounds[1] * 4);
+	}
+}
+
+// This WeaponEffect has a 5% chance to increase the stats of the weapon itself by 1d10.
+void selfImprovementEffect(Weapon* ownerWeapon, Entity* target) {
+	if ((rand() % 100) < 5) {
+		cout << (*ownerWeapon) << " automatically sharpens itself! The effect of Self Improvement has increased " << (*ownerWeapon) << "'s stats!" << endl;
+		ownerWeapon->upgradeWeapon((rand() % 10) + 1);
+	}
+}
+
+// Initializes WeaponEffects to an array `weaponEffectsArray` (because I cannot for the life of me figure out how to use structs outside of function scope)
+void initWeaponEffects(WeaponEffect weaponEffectsArray[]) {
+	// Vampirism
+	weaponEffectsArray[0].effect = vampirismEffect;
+	weaponEffectsArray[0].description = "Has a 25% chance to heal the weapon's owner for 5% of their max health on-hit. (Vampirism)";
+
+	// GigaCrit
+	weaponEffectsArray[1].effect = gigaCritEffect;
+	weaponEffectsArray[1].description = "Has a 15% chance to deal max damage times four to a target on-hit. (GigaCrit)";
+	weaponEffectsArray[1].target = "opponent";
+
+	// Self Improvement
+	weaponEffectsArray[2].effect = selfImprovementEffect;
+	weaponEffectsArray[2].description = "Has a 5% chance to upgrade itself 1d10 times. (Self Improvement)";
+}
+
 
 /*********************
  * Methods of Weapon * 
@@ -22,7 +62,7 @@ Weapon::Weapon(int worth) {
 	string descriptor = weaponDescriptors[rand() % 10];
 
 	name = "The " + adjective + " " + type + descriptor;
-	this->worth = worth;
+	this->worth = 0;
 
 	bearer = nullptr;
 
@@ -34,41 +74,8 @@ Weapon::Weapon(int worth) {
 	armor = 0;
 	speed = 1;
 
-	// Generate stats -- We randomly assign points (based on worth) to each of the stats (this is also weighted)
-	for (int i = 0; i < worth; i++) {
-		int randChoice = rand() % 100;	// Choose a random percentage
-		if (randChoice < 40) {							// (0-39%) Increase the lower damage bound and range by 1d20
-			int range = damageBounds[1] - damageBounds[0] + (rand() % 20) + 1;
-			damageBounds[0] += (rand() % 20) + 1;
-			damageBounds[1] = damageBounds[0] + range;
-		}
-		else if (randChoice < 65) {						// (45-64%) Increase to-hit chance by 5-10%
-			if (hitPercent >= 100) { // If we already maxed out the hitpercent
-				i--; // "Refund" a point
-				continue; // Try again
-			}
-			hitPercent += (rand() % 6) + 5;
-		}
-		else if (randChoice < 75) {						// (65-74%) Increase speed by 1d8
-			speed += (rand() % 8) + 1;
-		}
-		else if (randChoice < 85) {						// (75-84%) Increase armor by 1d8
-			armor += (rand() % 8) + 1;
-		}
-		else if (randChoice < 95) {						// (85-94%) Increase critical hit chance by 5-10%
-			if (critPercent >= 100) { // If we already maxed out the critpercent
-				i--;
-				continue;
-			}
-			critPercent += (rand() % 6) + 5;
-		}
-		else if (randChoice < 99) {						// (95-98%) Increase all stats by 1d4
-			hitPercent += (rand() % 4) + 1;
-		}
-		else if (randChoice < 100) {					// (99-100%) Add an on-hit effect
-			// TODO: Make effects
-		}
-	}
+	// Generate stats -- We randomly assign points (based on worth) to each of the stats (this is also weighted). See Weapon::upgradeWeapon for more.
+	upgradeWeapon(worth);
 }
 
 // Gets the name of the Weapon.
@@ -130,10 +137,10 @@ void Weapon::makeAttack(Entity* target) {
 		// On-hit effects
 		for (unsigned int i = 0; i < onHitEffects.size(); i++) {
 			if (onHitEffects[i].target == "self") { // If it affects the bearer...
-				onHitEffects[i].effect(bearer);
+				onHitEffects[i].effect(this, bearer);
 			} 
 			else { // If it affects the target being attacked...
-				onHitEffects[i].effect(target);
+				onHitEffects[i].effect(this, target);
 			}
 		}
 	}
@@ -142,10 +149,49 @@ void Weapon::makeAttack(Entity* target) {
 	}
 }
 
+// Adds worth to a weapon, which increases stats. Stats are randomly increased (with weighting) for a number of times equal to `upgradeAmount`. Also increases worth by `upgradeAmount`.
+void Weapon::upgradeWeapon(int upgradeAmount) {
+	worth += upgradeAmount;
+	for (int i = 0; i < upgradeAmount; i++) {
+		int randChoice = rand() % 100;	// Choose a random percentage
+		if (randChoice < 40) {							// (0-39%) Increase the lower damage bound and range by 1d20
+			int range = damageBounds[1] - damageBounds[0] + (rand() % 20) + 1;
+			damageBounds[0] += (rand() % 20) + 1;
+			damageBounds[1] = damageBounds[0] + range;
+		}
+		else if (randChoice < 65) {						// (45-64%) Increase to-hit chance by 5-10%
+			if (hitPercent >= 100) { // If we already maxed out the hitpercent
+				i--; // "Refund" a point
+				continue; // Try again
+			}
+			hitPercent += (rand() % 6) + 5;
+		}
+		else if (randChoice < 75) {						// (65-74%) Increase speed by 1d8
+			speed += (rand() % 8) + 1;
+		}
+		else if (randChoice < 85) {						// (75-84%) Increase armor by 1d8
+			armor += (rand() % 8) + 1;
+		}
+		else if (randChoice < 95) {						// (85-94%) Increase critical hit chance by 5-10%
+			if (critPercent >= 100) { // If we already maxed out the critpercent
+				i--;
+				continue;
+			}
+			critPercent += (rand() % 6) + 5;
+		}
+		else if (randChoice < 99) {						// (95-98%) Increase all stats by 1d4
+			hitPercent += (rand() % 4) + 1;
+		}
+		else if (randChoice < 100) {					// (99-100%) Add an on-hit effect
+			onHitEffects.push_back(weaponEffectsArray[rand() % 3]); // Add a random effect to the onHitEffects list
+		}
+	}
+}
 
-/*********************
- * Friends of Weapon *
- *********************/
+
+/***************************
+ * Other Friends of Weapon *
+ ***************************/
 
 // Streams the name of the Weapon to an ostream (alias of Weapon::getName()).
 ostream& operator<<(ostream& out, Weapon& weapon) {
