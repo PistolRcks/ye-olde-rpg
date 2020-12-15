@@ -4,6 +4,16 @@ int maximum(int a, int b) { // I am not going to include another header for max(
 	return (a > b) ? a : b;
 }
 
+/*****************
+ * WeaponEffects *
+ *****************/
+WeaponEffect weaponEffectsArray[3];
+
+
+/*********************
+ * Methods of Weapon * 
+ *********************/
+
 // Randomly generates a Weapon with a worth of `worth`.
 Weapon::Weapon(int worth) {
 	// Randomly generate the name
@@ -94,7 +104,11 @@ void Weapon::showStats() {
 	cout << setw(midWidth) << "Armor | " << left << armor << " (Armor reduces damage)" << endl << right;
 	cout << setw(midWidth) << "Speed | " << left << armor << " (Speed determines how fast you attack and who attacks first)" << endl << right;
 
-	// TODO: Add in effect text
+	// On-hit effect descriptions
+	cout << setw(0) << endl; // Reset cout modifiers, also create a newline for niceness
+	for (unsigned int i = 0; i < onHitEffects.size(); i++) {
+		cout << "Effect: " << onHitEffects.at(i).description << endl;
+	}
 }
 
 // Makes an attack with the Weapon at the target Entity.
@@ -106,30 +120,32 @@ void Weapon::makeAttack(Entity* target) {
 		if (((rand() % 100) + 1) < critPercent) { // If it crits...
 			damage *= 2;						  // Multiply the damage by two
 			target->takeDamage(damage);
-			cout << "CRIT! " << (*this) << " comes down with a mighty strike, dealing " << damage << " DMG!" << endl;
+			cout << "CRIT! " << name << " comes down with a mighty strike!" << endl;
 		}
-		else {
+		else { // Normal hit (non-crit)
 			target->takeDamage(damage);
-			cout << (*this) << " lands a blow on its foe, dealing " << damage << " DMG!" << endl;
+			cout << name << " lands a direct blow on its foe!" << endl;
 		}
 
-		if (onHitEffects.size() > 0) { // If there's an on-hit effect...
-			for (unsigned int i = 0; i < onHitEffects.size(); i++) { // Proc all effects
-				if (onHitEffects[i].target == "self") { // If it affects the bearer...
-					onHitEffects[i].effect(bearer);
-				} 
-				else { // If it affects the target being attacked...
-					onHitEffects[i].effect(target);
-				}
+		// On-hit effects
+		for (unsigned int i = 0; i < onHitEffects.size(); i++) {
+			if (onHitEffects[i].target == "self") { // If it affects the bearer...
+				onHitEffects[i].effect(bearer);
+			} 
+			else { // If it affects the target being attacked...
+				onHitEffects[i].effect(target);
 			}
 		}
 	}
-	else {
-		cout << (*this) << " completely whiffed its attack..." << endl;
+	else { // On miss
+		cout << name << " completely whiffed its attack..." << endl;
 	}
 }
 
 
+/*********************
+ * Friends of Weapon *
+ *********************/
 
 // Streams the name of the Weapon to an ostream (alias of Weapon::getName()).
 ostream& operator<<(ostream& out, Weapon& weapon) {

@@ -52,13 +52,29 @@ void Entity::setHP(int HP) {
 // Inflicts damage upon the Entity. Negative damage will never increase the Entity's HP above the its maxHP. Will not reduce HP past 0. 
 // If HP would be reduced to or past 0, state will be changed to DEAD, and triggers onDeath(). 
 void Entity::takeDamage(int damage) {
-	if (currentHP - damage > maxHP) { // Heal cap from before
+	// Sanity checks
+	int dmgAfterArmor = damage - equippedWeapon->getArmor(); // Default
+	if (damage < 0) { // If damage is negative (i.e. healing), we don't want to subtract armor for extra healing
+		dmgAfterArmor = damage;
+	}
+	else if (damage >= 0 && dmgAfterArmor <= 0) { // If the damage after armor is 0 or less...
+		cout << "*TING!* " << (*equippedWeapon) << " completely blocked all incoming damage!" << endl;
+		return;
+	}
+	
+	if (currentHP - dmgAfterArmor > maxHP) { // Heal cap from before
+		cout << name << " feels much better. "<< name <<" have been healed for " << (-dmgAfterArmor) << " HP!" << endl;
 		currentHP = maxHP;
 	}
-	else if (currentHP - damage <= 0) {
+	else if (currentHP - dmgAfterArmor <= 0) { // If damage would cause the player to die
+		cout << "The blow for " << dmgAfterArmor << " DMG is fatal!" << endl;
 		currentHP = 0;
 		state = DEAD;
 		onDeath();
+	}
+	else { // Regular damage taking
+		cout << name << " takes " << dmgAfterArmor << " DMG!" << endl;
+		currentHP -= dmgAfterArmor;
 	}
 }
 

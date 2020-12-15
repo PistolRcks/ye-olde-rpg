@@ -20,7 +20,7 @@ private:
 	int maxHP; // The maximum HP of the entity
 	int currentHP; // The current HP of the entity
 	EntityState state = ALIVE; // State of the entity (enums are unscoped but we won't name anything else ALIVE, DEAD or SOMEWHERE_IN_BETWEEN)
-	Weapon* equippedWeapon; // The index of the currently equipped Weapon.
+	Weapon* equippedWeapon; // A pointer to the currently equipped Weapon.
 
 	void (*onDeath)(); // A function pointer to the effect which will proc on death of the Entity.
 	void (*onTurnStart)(); // A function pointer to the effect which will proc upon the start of a turn

@@ -61,9 +61,13 @@ struct WeaponEffect {
 };
 
 class Weapon {
-private:
-	friend struct WeaponEffect;
+// Friends
+// Operators
+friend ostream& operator<<(ostream& out, Weapon& weapon);
 
+friend struct WeaponEffect;
+
+private:
 	// Metadata
 	string name;
 	int worth;
@@ -93,9 +97,6 @@ public:
 	// Methods
 	void showStats();
 	void makeAttack(Entity* target);
-
-	// Operators
-	friend ostream& operator<<(ostream& out, Weapon& weapon);
 };
 #endif
 
