@@ -7,7 +7,6 @@ int maximum(int a, int b) { // I am not going to include another header for max(
 /*****************
  * WeaponEffects *
  *****************/
-WeaponEffect weaponEffectsArray[3];
 
 // This WeaponEffect heals the wielder for 5% of its maxHealth.
 void vampirismEffect(Weapon* ownerWeapon, Entity* target) {
@@ -31,22 +30,6 @@ void selfImprovementEffect(Weapon* ownerWeapon, Entity* target) {
 		cout << (*ownerWeapon) << " automatically sharpens itself! The effect of Self Improvement has increased " << (*ownerWeapon) << "'s stats!" << endl;
 		ownerWeapon->upgradeWeapon((rand() % 10) + 1);
 	}
-}
-
-// Initializes WeaponEffects to an array `weaponEffectsArray` (because I cannot for the life of me figure out how to use structs outside of function scope)
-void initWeaponEffects(WeaponEffect weaponEffectsArray[]) {
-	// Vampirism
-	weaponEffectsArray[0].effect = vampirismEffect;
-	weaponEffectsArray[0].description = "Has a 25% chance to heal the weapon's owner for 5% of their max health on-hit. (Vampirism)";
-
-	// GigaCrit
-	weaponEffectsArray[1].effect = gigaCritEffect;
-	weaponEffectsArray[1].description = "Has a 15% chance to deal max damage times four to a target on-hit. (GigaCrit)";
-	weaponEffectsArray[1].target = "opponent";
-
-	// Self Improvement
-	weaponEffectsArray[2].effect = selfImprovementEffect;
-	weaponEffectsArray[2].description = "Has a 5% chance to upgrade itself 1d10 times. (Self Improvement)";
 }
 
 
@@ -186,6 +169,22 @@ void Weapon::upgradeWeapon(int upgradeAmount) {
 			onHitEffects.push_back(weaponEffectsArray[rand() % 3]); // Add a random effect to the onHitEffects list
 		}
 	}
+}
+
+// Initializes WeaponEffects to the weaponEffectsArray (because I cannot for the life of me figure out how to use structs outside of function scope)
+void Weapon::initWeaponEffects() {
+	// Vampirism
+	weaponEffectsArray[0].effect = vampirismEffect;
+	weaponEffectsArray[0].description = "Has a 25% chance to heal the weapon's owner for 5% of their max health on-hit. (Vampirism)";
+
+	// GigaCrit
+	weaponEffectsArray[1].effect = gigaCritEffect;
+	weaponEffectsArray[1].description = "Has a 15% chance to deal max damage times four to a target on-hit. (GigaCrit)";
+	weaponEffectsArray[1].target = "opponent";
+
+	// Self Improvement
+	weaponEffectsArray[2].effect = selfImprovementEffect;
+	weaponEffectsArray[2].description = "Has a 5% chance to upgrade itself 1d10 times. (Self Improvement)";
 }
 
 

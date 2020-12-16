@@ -12,6 +12,8 @@ int main() {
 	// Set random seed
 	srand(time(NULL));
 
+	Weapon::initWeaponEffects(); // Initialize weapon effects (for the reason I state in Weapon.cpp)
+
 	// Useful Variables
 	string playerName;
 	Weapon* starterWeapon = new Weapon(10);
@@ -38,9 +40,13 @@ int main() {
 
 	Entity* player = new Entity(playerName, 200, starterWeapon);
 
-	cout << "May thine journey fare thee well, Sir " << (*player) << "." << endl;
+	cout << endl; // for niceness
 
-
+	cout << "The local king asks you to go on a quest." << endl << "\"Hail, Sir " << (*player) << "!\" the wise old man calls. \
+\"There is a dungeon off to the east filled with monsters--mind taking care of it? There will be a reward...\"" << endl << endl;
+	cout << "Now there's an offer you can't possibly refuse. You agree." << endl << endl;
+	cout << "\"May thine journey fare thee well then, Sir " << (*player) << ".\"" << endl << endl;
+	cout << "You head off on your journey and enter Ye Olde Dungeon..." << endl << endl;
 
 	//   -- Main Game Loop --   //
 	//   -- Outro Sequence --   //

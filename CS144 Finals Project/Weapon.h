@@ -54,13 +54,13 @@ static string weaponDescriptors[10] = {
 
 class Entity; // Forward declaration required to resolve circular dependency
 
+class Weapon; // Weapon needs to be declared for WeaponEffect
+
 struct WeaponEffect {
-	void (*effect)(Weapon*, Entity&*); // The effect the weapon will proc. The first parameter is a pointer to the Weapon which causes the effect, and the second parameter is a pointer to the target Entity of the effect.
+	void (*effect)(Weapon*, Entity*); // The effect the weapon will proc. The first parameter is a pointer to the Weapon which causes the effect, and the second parameter is a pointer to the target Entity of the effect.
 	string description; // A description of the weapon's effect.
 	string target = "self"; // The target who will be affected by the effect (either "self" or "opponent").
 };
-
-void initWeaponEffects(WeaponEffect weaponEffectsArray[]);
 
 class Weapon {
 // Friends
@@ -88,6 +88,7 @@ private:
 	int speed;
 
 	// Effects
+	static WeaponEffect weaponEffectsArray[3]; // A place to store all possible weapon effects
 	vector<WeaponEffect> onHitEffects;
 public:
 	// Constructors
@@ -103,6 +104,9 @@ public:
 	void showStats();
 	void makeAttack(Entity* target);
 	void upgradeWeapon(int upgradeAmount);
+	
+	// For weapon effects
+	static void initWeaponEffects();
 };
 #endif
 
