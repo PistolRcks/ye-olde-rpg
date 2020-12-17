@@ -1,5 +1,32 @@
 #include "Entity.h"
 
+/*******************************
+ * onTurnStart Effects (Brains *
+ *******************************/
+
+// An AI brain. This brain always attacks.
+void slasherBrain(Entity* parentEntity, Entity* enemy) {
+	cout << (*parentEntity) << " lunges at you!" << endl;
+	parentEntity->makeAttack(enemy);
+}
+
+// An AI brain. This brain has a 50% chance to skip their turn.
+void sluggishBrain(Entity* parentEntity, Entity* enemy) {
+	if ((rand() % 2) == 0) { // Attack mode
+		cout << (*parentEntity) << " musters up the courage to swing!" << endl;
+		parentEntity->makeAttack(enemy);
+	}
+	else { // Do nothing mode
+		cout << (*parentEntity) << " is too scared to attack!" << endl;
+	}
+
+}
+
+// An AI brain. This brain ALWAYS skips their turn.
+void lazyBrain(Entity* parentEntity, Entity* enemy) {
+	cout << (*parentEntity) << " lazes around!" << endl;
+}
+
 /*********************
  * Methods of Entity *
  *********************/
@@ -8,23 +35,23 @@
  * @param `string` name - The name of the Entity.
  * @param `int` maxHP - The maximum hit points (better known as health) of the Entity. `currentHP` will also be set to this value.
  * @param `Weapon*` weaponToEquip - The Weapon to equip to the Entity. (Optional)
- * @oaram `void (*func)()` onDeathEffect - The function to call when the Entity dies. (Optional)
- * @param `void (*func)()` onTurnStartEffect - The function to call when the Entity starts its turn--most of the time, this will provide AI. ((Optional)
+ * @param `void (*func)(Entity*)` onTurnStartEffect - The function to call when the Entity starts its turn--most of the time, this will provide AI. The first parameter is the parent Entity of the effect, and the second is the enemy Entity. (Optional)
  */
-Entity::Entity(string name, int maxHP, Weapon* weaponToEquip, void (*onDeathEffect)(), void (*onTurnStartEffect)()) {
+Entity::Entity(string name, int maxHP, Weapon* weaponToEquip, void (*onTurnStartEffect)(Entity*)) {
 	this->name = name;
 	this->maxHP = maxHP;
 	currentHP = maxHP;
 
 	equippedWeapon = weaponToEquip;
 
-	onDeath = onDeathEffect;
 	onTurnStart = onTurnStartEffect;
 }
 
 // Destructor for the Entity class
 Entity::~Entity() {
-	delete equippedWeapon;
+	if (equippedWeapon != nullptr) {
+		delete equippedWeapon;
+	}
 }
 
 // Gets the name of the Entity.
@@ -54,7 +81,7 @@ void Entity::setHP(int HP) {
 }
 
 // Inflicts damage upon the Entity. Negative damage will never increase the Entity's HP above the its maxHP. Will not reduce HP past 0. 
-// If HP would be reduced to or past 0, state will be changed to DEAD, and triggers onDeath(), if it is set (otherwise does nothing). 
+// If HP would be reduced to or past 0, state will be changed to DEAD. 
 void Entity::takeDamage(int damage) {
 	// Sanity checks
 	int dmgAfterArmor = damage - equippedWeapon->getArmor(); // Default
@@ -74,9 +101,6 @@ void Entity::takeDamage(int damage) {
 		cout << "The blow for " << dmgAfterArmor << " DMG is fatal!" << endl;
 		currentHP = 0;
 		state = DEAD;
-		if (onDeath != nullptr) {
-			onDeath();
-		}
 	}
 	else { // Regular damage taking
 		cout << name << " takes " << dmgAfterArmor << " DMG!" << endl;
@@ -109,7 +133,7 @@ void Entity::makeAttack(Entity* target) {
 // Begins the turn for the Entity. Runs an onTurnStart effect, if there is one (otherwise does nothing).
 void Entity::beginTurn() {
 	if (onTurnStart != nullptr) {
-		onTurnStart();
+		onTurnStart(this);
 	}
 }
 
@@ -121,7 +145,6 @@ void Entity::endTurn(TurnTracker* turnTracker) {
 /*********************
  * Friends of Entity *
  *********************/
-
 
 // Writes the name of the Entity to an ostream. Alias for Entity::getName().
 ostream& operator<<(ostream& out, Entity& entity) {

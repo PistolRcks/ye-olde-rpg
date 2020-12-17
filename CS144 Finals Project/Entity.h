@@ -14,9 +14,18 @@ using namespace std;
 enum EntityState {ALIVE, DEAD, SOMEWHERE_IN_BETWEEN};
 
 class Weapon; // Forward declaration required to resolve circular dependency
-class TurnTracker
+class TurnTracker;
 
 class Entity {
+// Friends
+// Operators
+friend ostream& operator<<(ostream& out, Entity& entity);
+
+// onTurnStart Effects (brains)
+friend void slasherBrain(Entity* parentEntity, Entity* enemy);
+friend void sluggishBrain(Entity* parentEntity, Entity* enemy);
+friend void lazyBrain(Entity* parentEntity, Entity* enemy);
+
 private:
 	string name;					// The name of the entity
 	int maxHP;						// The maximum HP of the entity
@@ -24,11 +33,10 @@ private:
 	EntityState state = ALIVE;		// State of the entity (enums are unscoped but we won't name anything else ALIVE, DEAD or SOMEWHERE_IN_BETWEEN)
 	Weapon* equippedWeapon;			// A pointer to the currently equipped Weapon.
 
-	void (*onDeath)();				// A function pointer to the effect which will proc on death of the Entity.
-	void (*onTurnStart)();			// A function pointer to the effect which will proc upon the start of a turn
+	void (*onTurnStart)(Entity*, Entity*);	// A function pointer to the effect which will proc upon the start of a turn. The first parameter is the parent Entity of the effect, and the second is the enemy Entity.
 public:
 	// Constructors
-	Entity(string name, int maxHP, Weapon* weaponToEquip = nullptr, void (*onDeathEffect)() = nullptr, void (*onTurnStartEffect)() = nullptr);
+	Entity(string name, int maxHP, Weapon* weaponToEquip = nullptr, void (*onTurnStartEffect)(Entity*) = nullptr);
 	~Entity();
 
 	// Getters/Setters
@@ -50,8 +58,12 @@ public:
 	void beginTurn();
 	void endTurn(TurnTracker* turnTracker);
 
-	// Operators
-	friend ostream& operator<<(ostream& out, Entity& entity);
+	// Static (for choosing brains in main)
+	static void (*entityBrains[3])(Entity*, Entity*) = {
+		slasherBrain,
+		sluggishBrain,
+		lazyBrain
+	}
 };
 #endif
 

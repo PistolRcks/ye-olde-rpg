@@ -65,9 +65,9 @@ struct WeaponEffect {
 class Weapon {
 // Friends
 // On-hit Effects
-friend void vampirismEffect(Weapon* ownerWeapon, Entity* target);
-friend void gigaCritEffect(Weapon* ownerWeapon, Entity* target);
-friend void selfImprovementEffect(Weapon* ownerWeapon, Entity* target);
+friend void vampirismEffect(Weapon* parentWeapon, Entity* target);
+friend void gigaCritEffect(Weapon* parentWeapon, Entity* target);
+friend void selfImprovementEffect(Weapon* parentWeapon, Entity* target);
 
 // Operators
 friend ostream& operator<<(ostream& out, Weapon& weapon);

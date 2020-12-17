@@ -35,7 +35,7 @@ void TurnTracker::endCombat() {
 }
 
 
-// Flips between whose turn it is and increments turn counter. Combatant A always takes priority over Combatant B.
+// Runs the current turn, flips between whose turn it is, and increments turn counter. Combatant A always takes priority over Combatant B.
 void TurnTracker::advanceTurnTracker() {
 	if (turnNumber == 0) { // At the start of combat, determine turn order
 		if (combatantA->getEquippedWeapon()->getSpeed() >= combatantB->getEquippedWeapon()->getSpeed()) { // If Combatant A's speed is greater than (or equal to; priority, remember?) Combatant B's...
@@ -60,5 +60,11 @@ void TurnTracker::advanceTurnTracker() {
 		combatantTurn = 1;	// Set it to Combatant A's turn next
 		break;
 	}
+	
+	// Check if the next turn's combatant is dead, and, if so, end combat
+	if (getNextTurnsCombatant()->getState() == DEAD) {
+		isInCombat = false;
+	}
+
 	turnNumber++;	// Increment the turn counter
 }
