@@ -69,6 +69,7 @@ int main() {
 	//   -- Main Game Loop --   //
 	bool active = true;
 	int battlesWon = 0;
+	string playerChoice;
 	while (active && (player->getState() == ALIVE)) {
 		cout << "You walk deeper into the dungeon..." << endl;
 
@@ -99,7 +100,7 @@ int main() {
 					// Gain sanitized input
 					do {
 						cout << "Choice: ";
-						cin >> playerChoice;
+						getline(cin, playerChoice);
 						if (cin.fail()) {
 							cin.ignore(numeric_limits<streamsize>::max(), '\n');
 							cin.clear();
@@ -109,8 +110,17 @@ int main() {
 
 					cout << endl;
 
+					// Get the player's first char of input
+					char playerChoiceChar;
+					if (playerChoice.length() > 0) { // If the player typed anything
+						playerChoiceChar = playerChoice.at(0);
+					}
+					else { // The player entered an enter
+						playerChoiceChar = ' ';
+					}
+
 					// Apply player's input
-					switch (toupper(playerChoice)) {
+					switch (toupper(playerChoiceChar)) {
 					case 'A':	// Show weapon stats and current health (not meaningful)
 						cout << "Looking at yourself, you find you are at " << player->getCurrentHP() << " out of " << player->getMaxHP() << " HP." << endl;
 						player->getEquippedWeapon()->showStats();

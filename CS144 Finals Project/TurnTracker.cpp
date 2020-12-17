@@ -5,24 +5,13 @@
  * Methods of TurnTracker *
  **************************/
 
-/* Default constructor for the TurnTracker class. Sets who goes first and Combatant A and Combatant B.
+/* Default constructor for the TurnTracker class.
  * @param `Entity*` combatantA - A pointer to an Entity which is in combat. (In the case of speed ties, this Entity always goes first.)
  * @param `Entity*` combatantB - A pointer to another Entity which is in combat.
  */
 TurnTracker::TurnTracker(Entity* combatantA, Entity* combatantB) {
 	this->combatantA = combatantA;
 	this->combatantB = combatantB;
-
-	if (turnNumber == 0) { // At the start of combat, determine turn order
-		if (combatantA->getEquippedWeapon()->getSpeed() >= combatantB->getEquippedWeapon()->getSpeed()) { // If Combatant A's speed is greater than (or equal to; priority, remember?) Combatant B's...
-			combatantTurn = 0;	// ...it's Combatant A's turn
-			cout << (*combatantA) << " goes first!" << endl;
-		}
-		else { // If Combatant B's speed is greater...
-			combatantTurn = 1;	// ...it's Combatant B's turn
-			cout << (*combatantB) << " goes first!" << endl;
-		}
-	}
 }
 
 // Gets the current Combatant's index (0 for Combatant A and 1 for Combatant B).
@@ -53,8 +42,20 @@ void TurnTracker::endCombat() {
 }
 
 
-// Runs the current turn, flips between whose turn it is, and increments turn counter.
+// Runs the current turn, flips between whose turn it is, and increments turn counter. Also sets turn order if it is the first turn. Combatant A gets priority over ties.
 void TurnTracker::advanceTurnTracker() {
+	if (turnNumber == 0) { // At the start of combat, determine turn order
+		if (combatantA->getEquippedWeapon()->getSpeed() >= combatantB->getEquippedWeapon()->getSpeed()) { // If Combatant A's speed is greater than (or equal to; priority, remember?) Combatant B's...
+			combatantTurn = 0;	// ...it's Combatant A's turn
+			cout << (*combatantA) << " goes first!" << endl;
+		}
+		else { // If Combatant B's speed is greater...
+			combatantTurn = 1;	// ...it's Combatant B's turn
+			cout << (*combatantB) << " goes first!" << endl;
+		}
+		turnNumber++;
+	}
+
 	// Run the turn for the current Combatant
 	switch (combatantTurn) {
 	case 0: // Combatant A
@@ -65,7 +66,7 @@ void TurnTracker::advanceTurnTracker() {
 	case 1:
 		cout << "[TURN " << turnNumber << "] It's " << (*combatantB) << "'s turn!" << endl;
 		combatantB->beginTurn(combatantA);
-		combatantTurn = 1;	// Set it to Combatant A's turn next
+		combatantTurn = 0;	// Set it to Combatant A's turn next
 		break;
 	}
 	

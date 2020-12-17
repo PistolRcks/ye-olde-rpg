@@ -121,8 +121,10 @@ void Weapon::showStats() {
 
 	// On-hit effect descriptions
 	cout << setw(0) << endl; // Reset cout modifiers, also create a newline for niceness
-	for (unsigned int i = 0; i < onHitEffects.size(); i++) {
-		cout << "Effect: " << onHitEffects.at(i).description << endl;
+	if (onHitEffects.size() > 0) {
+		for (unsigned int i = 0; i < onHitEffects.size(); i++) {
+			cout << "Effect: " << onHitEffects.at(i).description << endl;
+		}
 	}
 }
 
@@ -134,12 +136,12 @@ void Weapon::makeAttack(Entity* target) {
 
 		if (((rand() % 100) + 1) < critPercent) { // If it crits...
 			damage *= 2;						  // Multiply the damage by two
-			target->takeDamage(damage);
 			cout << "CRIT! " << name << " comes down with a mighty strike!" << endl;
+			target->takeDamage(damage);
 		}
 		else { // Normal hit (non-crit)
-			target->takeDamage(damage);
 			cout << name << " lands a direct blow on its foe!" << endl;
+			target->takeDamage(damage);
 		}
 
 		// On-hit effects
