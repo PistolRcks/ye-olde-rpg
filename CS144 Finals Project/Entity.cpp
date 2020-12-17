@@ -1,5 +1,9 @@
 #include "Entity.h"
 
+/*********************
+ * Methods of Entity *
+ *********************/
+
 /* Main costructor for the Entity class.
  * @param `string` name - The name of the Entity.
  * @param `int` maxHP - The maximum hit points (better known as health) of the Entity. `currentHP` will also be set to this value.
@@ -113,6 +117,11 @@ void Entity::beginTurn() {
 void Entity::endTurn(TurnTracker* turnTracker) {
 	turnTracker->advanceTurnTracker();
 }
+
+/*********************
+ * Friends of Entity *
+ *********************/
+
 
 // Writes the name of the Entity to an ostream. Alias for Entity::getName().
 ostream& operator<<(ostream& out, Entity& entity) {

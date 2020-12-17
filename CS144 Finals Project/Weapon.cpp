@@ -9,26 +9,26 @@ int maximum(int a, int b) { // I am not going to include another header for max(
  *****************/
 
 // This WeaponEffect heals the wielder for 5% of its maxHealth.
-void vampirismEffect(Weapon* ownerWeapon, Entity* target) {
+void vampirismEffect(Weapon* parentWeapon, Entity* target) {
 	if ((rand() % 100) < 25) { // 25% chance to proc
-		cout << (*ownerWeapon) << "'s effect, Vampirism, activates to heal its user!" << endl;
+		cout << (*parentWeapon) << "'s effect, Vampirism, activates to heal its user!" << endl;
 		target->takeDamage(target->getMaxHP() * -0.05); // Negative damage is the same as healing
 	}
 }
 
 // This WeaponEffect has a 15% chance to activate a GigaCrit, which deals max damage * 4.
-void gigaCritEffect(Weapon* ownerWeapon, Entity* target) {
+void gigaCritEffect(Weapon* parentWeapon, Entity* target) {
 	if ((rand() % 100) < 15) { // 15% chance to proc
-		cout << "A holy light shines upon " << (*ownerWeapon) << "! A GigaCrit smites " << (*target) << "!" << endl;
-		target->takeDamage(ownerWeapon->damageBounds[1] * 4);
+		cout << "A holy light shines upon " << (*parentWeapon) << "! A GigaCrit smites " << (*target) << "!" << endl;
+		target->takeDamage(parentWeapon->damageBounds[1] * 4);
 	}
 }
 
 // This WeaponEffect has a 5% chance to increase the stats of the weapon itself by 1d10.
-void selfImprovementEffect(Weapon* ownerWeapon, Entity* target) {
+void selfImprovementEffect(Weapon* parentWeapon, Entity* target) {
 	if ((rand() % 100) < 5) {
-		cout << (*ownerWeapon) << " automatically sharpens itself! The effect of Self Improvement has increased " << (*ownerWeapon) << "'s stats!" << endl;
-		ownerWeapon->upgradeWeapon((rand() % 10) + 1);
+		cout << (*parentWeapon) << " automatically sharpens itself! The effect of Self Improvement has increased " << (*parentWeapon) << "'s stats!" << endl;
+		parentWeapon->upgradeWeapon((rand() % 10) + 1);
 	}
 }
 

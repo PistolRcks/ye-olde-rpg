@@ -1,6 +1,9 @@
 // Defines the TurnTracker class, which takes care of choosing which Entity goes when.
 #include "TurnTracker.h"
 
+/**************************
+ * Methods of TurnTracker *
+ **************************/
 
 /* Default constructor for the TurnTracker class.
  * @param `Entity*` combatantA - A pointer to an Entity which is in combat. (In the case of speed ties, this entity always goes first.)
