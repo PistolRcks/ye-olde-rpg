@@ -108,7 +108,7 @@ public:
 	void upgradeWeapon(int upgradeAmount);
 	
 	// For weapon effects
-	struct WeaponEffect weaponEffectsArray[3]; // A place to store all possible weapon effects
+	struct vector<WeaponEffect> weaponEffectsArray; // A place to store all possible weapon effects
 };
 #endif
 

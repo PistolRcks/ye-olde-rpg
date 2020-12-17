@@ -51,11 +51,11 @@ void selfImprovementEffect(Weapon* parentWeapon, Entity* target) {
 }
 
 // Initialize all WeaponEffects
-WeaponEffect weaponEffectsArray[3] = {
+// For some odd reason, an array uses the default constructor, but vectors use the specified constructor??? wack
+vector<WeaponEffect> weaponEffectsArray = {
 	WeaponEffect(vampirismEffect, "Has a 25% chance to heal the weapon's owner for 5% of their max health on-hit. (Vampirism)", "self"),
 	WeaponEffect(gigaCritEffect, "Has a 15% chance to deal max damage times four to a target on-hit. (GigaCrit)", "opponent"),
 	WeaponEffect(selfImprovementEffect, "Has a 5% chance to upgrade itself 1d10 times. (Self Improvement)", "self")
-
 };
 
 /*********************
@@ -193,7 +193,7 @@ void Weapon::upgradeWeapon(int upgradeAmount) {
 			hitPercent += (rand() % 4) + 1;
 		}
 		else if (randChoice < 100) {					// (99-100%) Add an on-hit effect
-			onHitEffects.push_back(weaponEffectsArray[rand() % 3]); // Add a random effect to the onHitEffects list
+			onHitEffects.push_back(weaponEffectsArray.at(rand() % 3)); // Add a random effect to the onHitEffects list
 		}
 	}
 }
