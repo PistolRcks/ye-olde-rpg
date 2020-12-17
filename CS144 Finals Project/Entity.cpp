@@ -103,7 +103,7 @@ void Entity::takeDamage(int damage) {
 	}
 	
 	if (currentHP - dmgAfterArmor > maxHP) { // Heal cap from before
-		cout << name << " feels much better. "<< name <<" have been healed for " << (-dmgAfterArmor) << " HP!" << endl;
+		cout << name << " feels much better. They have been completely healed!" << endl;
 		currentHP = maxHP;
 	}
 	else if (currentHP - dmgAfterArmor <= 0) { // If damage would cause the player to die
@@ -112,7 +112,12 @@ void Entity::takeDamage(int damage) {
 		state = DEAD;
 	}
 	else { // Regular damage taking
-		cout << name << " takes " << dmgAfterArmor << " DMG!" << endl;
+		if (dmgAfterArmor < 0) { // If it's a heal
+			cout << "A holy light surrounds " << name << ". They heal for " << (-dmgAfterArmor) << " HP!" << endl;
+		}
+		else { // If it's regular damage
+			cout << name << " takes " << dmgAfterArmor << " DMG!" << endl;
+		}
 		currentHP -= dmgAfterArmor;
 	}
 }

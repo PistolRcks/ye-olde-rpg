@@ -44,7 +44,7 @@ void gigaCritEffect(Weapon* parentWeapon, Entity* target) {
 
 // This WeaponEffect has a 5% chance to increase the stats of the weapon itself by 1d10.
 void selfImprovementEffect(Weapon* parentWeapon, Entity* target) {
-	if ((rand() % 100) < 5) {
+	if ((rand() % 100) < 5) { // 5% chance to proc
 		cout << (*parentWeapon) << " automatically sharpens itself! The effect of Self Improvement has increased " << (*parentWeapon) << "'s stats!" << endl;
 		parentWeapon->upgradeWeapon((rand() % 10) + 1);
 	}
@@ -69,7 +69,7 @@ Weapon::Weapon(int worth) {
 	string type = weaponTypes[rand() % 10];
 	string descriptor = weaponDescriptors[rand() % 10];
 
-	name = "The " + adjective + " " + type + descriptor;
+	name = "The " + adjective + type + descriptor;
 	this->worth = 0;
 
 	bearer = nullptr;
@@ -122,7 +122,7 @@ void Weapon::showStats() {
 	cout << setw(midWidth) << "Critical Hit % | " << left << critPercent << "% (Critical hits deal twice the damage)" << endl << right;
 	cout << setw(midWidth) << "Damage | " << left << damageBounds[0] << "-" << damageBounds[1] << " DMG" << endl << right;
 	cout << setw(midWidth) << "Armor | " << left << armor << " (Armor reduces damage)" << endl << right;
-	cout << setw(midWidth) << "Speed | " << left << armor << " (Speed determines how fast you attack and who attacks first)" << endl << right;
+	cout << setw(midWidth) << "Speed | " << left << speed << " (Speed determines how fast you attack and who attacks first)" << endl << right;
 
 	// On-hit effect descriptions
 	cout << setw(0) << endl; // Reset cout modifiers, also create a newline for niceness
@@ -184,8 +184,8 @@ void Weapon::upgradeWeapon(int upgradeAmount) {
 		else if (randChoice < 75) {						// (65-74%) Increase speed by 1d8
 			speed += (rand() % 8) + 1;
 		}
-		else if (randChoice < 85) {						// (75-84%) Increase armor by 1d8
-			armor += (rand() % 8) + 1;
+		else if (randChoice < 85) {						// (75-84%) Increase armor by 1d20 * 2
+			armor += ((rand() % 20) + 1) * 2;
 		}
 		else if (randChoice < 95) {						// (85-94%) Increase critical hit chance by 5-10%
 			if (critPercent >= 100) { // If we already maxed out the critpercent

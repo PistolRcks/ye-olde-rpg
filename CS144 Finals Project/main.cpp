@@ -64,14 +64,14 @@ int main() {
 	cout << "[PRESS ENTER TO START YOUR ADVENTURE]";
 	getline(cin, temp);
 
-	cout << endl << endl;
+	cout << endl;
 
 	//   -- Main Game Loop --   //
 	bool active = true;
 	int battlesWon = 0;
 	string playerChoice;
 	while (active && (player->getState() == ALIVE)) {
-		cout << "You walk deeper into the dungeon..." << endl;
+		cout << endl << "(Battles Won: " << battlesWon << ") You walk deeper into the dungeon..." << endl;
 
 		// Generate an enemy
 		Weapon* enemyWeapon = new Weapon(static_cast<int>(10 * pow(2, battlesWon))); // Each weapon generated's worth is 10 * 2 ^ (number of battles won), making this game almost impossible to "beat".
@@ -147,24 +147,81 @@ int main() {
 			}
 			turnTracker.advanceTurnTracker(); // End the current turn and pass it on
 		} while (turnTracker.isCombatOngoing());
-		battlesWon++; // Either the player won or it doesn't matter (because they're either dead or they ran)
+
+		// Post-battle
+		if (player->getState() == ALIVE && active) { // If the character is alive and didn't run (aka if they won the battle)
+			// At the end of the battle, heal back HP
+			cout << endl << "------------------------------------------------" << endl << endl; // Spacer for niceness
+			cout << "At the end of the battle, you find a health potion! Your HP returns to maximum." << endl;
+			player->takeDamage(-(player->getMaxHP())); // Negative damage is healing, remember?
+
+			// Offer the player the enemy's weapon
+			cout << endl << "Upon your enemy's bloodied corpse, you find their weapon, " << (*(enemy.getEquippedWeapon())) << "." << endl;
+			cout << "Additionally, you can run away with your life." << endl << endl;
+			enemy.getEquippedWeapon()->showStats();
+
+			// Gain sanitized input
+			do {
+				cout << "Would you like to take it or run away? (Y/n/r): ";
+				getline(cin, playerChoice);
+				if (cin.fail()) {
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
+					cin.clear();
+					cout << "Not a valid option. Please try again." << endl;
+				}
+			} while (cin.fail());
+
+			cout << endl;
+
+			// Get the player's first char of input
+			char playerChoiceChar;
+			if (playerChoice.length() > 0) { // If the player typed anything
+				playerChoiceChar = playerChoice.at(0);
+			}
+			else { // The player pressed enter
+				playerChoiceChar = ' ';
+			}
+
+			switch (toupper(playerChoiceChar)) {
+			case 'N':
+				cout << "Okay then. Suit yourself, I guess, with your INFERIOR WEAPON." << endl;
+				break;
+			case 'R':
+				cout << "You know what? Running is fine. They may say that running is for quitters, but most quitters are also still alive." << endl;
+				active = false;
+				break;
+			default: // Enter or Y or realistically anything else
+				cout << "You pick up the enemy's weapon and toss your old one aside!" << endl;
+				Weapon* newWeapon = new Weapon(*enemyWeapon);	// Make a copy of the enemy's weapon (the enemy's will be deleted with the enemy's destructor)
+				player->setEquippedWeapon(newWeapon);			// setEquippedWeapon already takes care of deleting the previous weapon
+				cout << "You can see your reflection in " << (*(player->getEquippedWeapon())) << "!" << endl;
+				break;
+			}
+
+			battlesWon++; // Increment battles won
+
+			cout << endl << "[PRESS ENTER TO CONTINUE TO THE NEXT BATTLE]" << endl;
+			getline(cin, temp);
+		}
 	}
 
 	//   -- Outro Sequence --   //
 	cout << endl;
 	if (player->getState() == ALIVE) { // If the player ran
-		cout << "You exit out of the dungeon, cuts and scars abraising your body." << endl;
+		cout << "You sprint out of the dungeon, cuts and scars abraising your body." << endl;
 		cout << "Upon returning to the King, he tells you that you've won a timeshare in his kingdom. What a letdown." << endl;
-		cout << "If only you could get your afternoon back..." << endl;
+		cout << "If only you could get your afternoon back..." << endl << endl;
 	}
 	else { // If the player died
+		cout << "You were killed!" << endl << endl;
 		cout << "As the last breath of your life escapes your lungs, you can only think of one thing:" << endl;
-		cout << "\"Man, I really wish I had done something better with my Saturday afternoon...\"" << endl;
+		cout << "\"Man, I really wish I had done something better with my Saturday afternoon...\"" << endl << endl;
 	}
-	cout << endl << "FINAL SCORE: " << ((player->getEquippedWeapon()->getWorth() + player->getCurrentHP()) * (battlesWon + 1)) << endl << endl;
 	cout << "*****************" << endl;
 	cout << "*   GAME OVER   *" << endl;
-	cout << "*****************" << endl;
+	cout << "*****************" << endl << endl;
+	
+	cout << "FINAL SCORE: " << ((player->getEquippedWeapon()->getWorth() + player->getCurrentHP()) * (battlesWon + 1)) << endl << endl;
 	
 	return 0;
 }

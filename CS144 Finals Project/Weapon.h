@@ -14,15 +14,15 @@ using namespace std;
 
 // Words for weapon name generation
 static string weaponAdjectives[10] = {
-	"Threatening",
-	"Dirty",
-	"Chonkin'",
-	"Holy",
-	"Demonic",
-	"Shoddy",
-	"Discotechnical",
-	"Magical",
-	"Scottish",
+	"Threatening ",
+	"Dirty ",
+	"Chonkin' ",
+	"Holy ",
+	"Demonic ",
+	"Shoddy ",
+	"Discotechnical ",
+	"Magical ",
+	"Scottish ",
 	""
 };
 
