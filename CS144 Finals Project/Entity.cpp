@@ -146,11 +146,6 @@ void Entity::beginTurn(Entity* enemy) {
 	}
 }
 
-// Ends the Entity's turn, passing it off to the TurnTracker `turnTracker`.
-void Entity::endTurn(TurnTracker* turnTracker) {
-	turnTracker->advanceTurnTracker();
-}
-
 /*********************
  * Friends of Entity *
  *********************/

@@ -23,12 +23,14 @@ public:
 
 	// Getters and Setters
 	int getCurrentCombatantIndex();
-	Entity* getNextTurnsCombatant();
+	Entity* getCurrentCombatant();
+	Entity* getNextTurnCombatant();
 	bool isCombatOngoing();
 	void endCombat();
 
 	// Methods
 	void advanceTurnTracker();
+	void printTurn();
 };
 
 #endif

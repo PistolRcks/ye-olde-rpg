@@ -100,15 +100,13 @@ public:
 	string getName();
 	int getArmor();
 	int getSpeed();
+	int getWorth();
 	void setBearer(Entity* target);
 
 	// Methods
 	void showStats();
 	void makeAttack(Entity* target);
 	void upgradeWeapon(int upgradeAmount);
-	
-	// For weapon effects
-	struct vector<WeaponEffect> weaponEffectsArray; // A place to store all possible weapon effects
 };
 #endif
 

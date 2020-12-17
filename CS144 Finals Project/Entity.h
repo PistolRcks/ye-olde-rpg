@@ -56,7 +56,6 @@ public:
 	// Methods
 	void makeAttack(Entity* target);
 	void beginTurn(Entity* enemy);
-	void endTurn(TurnTracker* turnTracker);
 
 	// Statics (for choosing brains in main)
 	static void (*entityBrains[3])(Entity*, Entity*);

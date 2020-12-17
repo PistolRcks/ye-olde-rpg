@@ -86,7 +86,10 @@ int main() {
 
 		// Run through combat
 		do {
-			turnTracker.advanceTurnTracker();
+			turnTracker.printTurn(); // Print start-of-turn info
+			turnTracker.getCurrentCombatant()->beginTurn(turnTracker.getNextTurnCombatant()); // Run AI (if there is any)
+
+			// Player Input
 			if (turnTracker.getCurrentCombatantIndex() == 0) { // If it's the player's turn, hand the controls off to them; otherwise let the enemy brain do the work
 				bool meaningfulActionTaken = false;	// Meaningful actions will take up a player's turn
 				while (!meaningfulActionTaken) {
@@ -115,7 +118,7 @@ int main() {
 					if (playerChoice.length() > 0) { // If the player typed anything
 						playerChoiceChar = playerChoice.at(0);
 					}
-					else { // The player entered an enter
+					else { // The player pressed enter
 						playerChoiceChar = ' ';
 					}
 
@@ -142,10 +145,26 @@ int main() {
 					}
 				}
 			}
+			turnTracker.advanceTurnTracker(); // End the current turn and pass it on
 		} while (turnTracker.isCombatOngoing());
+		battlesWon++; // Either the player won or it doesn't matter (because they're either dead or they ran)
 	}
 
 	//   -- Outro Sequence --   //
-	cout << "You win or something!!!!!!5";
+	cout << endl;
+	if (player->getState() == ALIVE) { // If the player ran
+		cout << "You exit out of the dungeon, cuts and scars abraising your body." << endl;
+		cout << "Upon returning to the King, he tells you that you've won a timeshare in his kingdom. What a letdown." << endl;
+		cout << "If only you could get your afternoon back..." << endl;
+	}
+	else { // If the player died
+		cout << "As the last breath of your life escapes your lungs, you can only think of one thing:" << endl;
+		cout << "\"Man, I really wish I had done something better with my Saturday afternoon...\"" << endl;
+	}
+	cout << endl << "FINAL SCORE: " << ((player->getEquippedWeapon()->getWorth() + player->getCurrentHP()) * (battlesWon + 1)) << endl << endl;
+	cout << "*****************" << endl;
+	cout << "*   GAME OVER   *" << endl;
+	cout << "*****************" << endl;
+	
 	return 0;
 }

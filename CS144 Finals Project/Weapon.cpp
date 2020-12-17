@@ -101,6 +101,11 @@ int Weapon::getSpeed() {
 	return speed;
 }
 
+// Gets the worth of the Weapon (explained in Weapon.h)
+int Weapon::getWorth() {
+	return worth;
+}
+
 // Sets the bearer of the Weapon (i.e. the Entity which has this weapon equipped). This is used for effects.
 void Weapon::setBearer(Entity* target) {
 	bearer = target;
