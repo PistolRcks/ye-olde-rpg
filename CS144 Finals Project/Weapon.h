@@ -1,4 +1,4 @@
-// Defines the Weapon class, which Entities use to hit each other.
+// Declares the Weapon class, which Entities use to hit each other.
 
 #ifndef WEAPON_H
 #define WEAPON_H
@@ -74,22 +74,22 @@ friend ostream& operator<<(ostream& out, Weapon& weapon);
 
 private:
 	// Metadata
-	string name;
-	int worth;
-	Entity* bearer;
+	string name;							// The name of the weapon.
+	int worth;								// Determines how many stat increases this weapon has had.
+	Entity* bearer;							// Points to the Entity which has this weapon equipped.
 
 	// Attack stats
-	int hitPercent;
-	int critPercent;
-	int damageBounds[2];
+	int hitPercent;							// The percentage chance that the Weapon will hit
+	int critPercent;						// The percentage chance that the Weapon will perform a critical hit (deals 2x damage)
+	int damageBounds[2];					// The lower (damageBounds[0]) and upper (damageBounds[1]) bounds of damage that the weapon can deal (not affected by crits)
 
 	// Other stats attributed to a Weapon
-	int armor;
-	int speed;
+	int armor;								// Subtracts damage dealt to the Weapon's bearer
+	int speed;								// Determines who goes first
 
 	// Effects
 	static WeaponEffect weaponEffectsArray[3]; // A place to store all possible weapon effects
-	vector<WeaponEffect> onHitEffects;
+	vector<WeaponEffect> onHitEffects;		// A list of all WeaponEffects which are run when the weapon hits
 public:
 	// Constructors
 	Weapon(int worth);

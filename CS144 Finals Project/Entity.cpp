@@ -50,7 +50,7 @@ void Entity::setHP(int HP) {
 }
 
 // Inflicts damage upon the Entity. Negative damage will never increase the Entity's HP above the its maxHP. Will not reduce HP past 0. 
-// If HP would be reduced to or past 0, state will be changed to DEAD, and triggers onDeath(). 
+// If HP would be reduced to or past 0, state will be changed to DEAD, and triggers onDeath(), if it is set (otherwise does nothing). 
 void Entity::takeDamage(int damage) {
 	// Sanity checks
 	int dmgAfterArmor = damage - equippedWeapon->getArmor(); // Default
@@ -70,7 +70,9 @@ void Entity::takeDamage(int damage) {
 		cout << "The blow for " << dmgAfterArmor << " DMG is fatal!" << endl;
 		currentHP = 0;
 		state = DEAD;
-		onDeath();
+		if (onDeath != nullptr) {
+			onDeath();
+		}
 	}
 	else { // Regular damage taking
 		cout << name << " takes " << dmgAfterArmor << " DMG!" << endl;
@@ -95,9 +97,21 @@ void Entity::setEquippedWeapon(Weapon* weapon) {
 	weapon->setBearer(this);
 }
 
-// Makes an attack with the currently equipped weapon. Alias for inventory[currentWeapon]->makeAttack().
+// Makes an attack with the currently equipped weapon. Alias for equippedWeapon->makeAttack(target).
 void Entity::makeAttack(Entity* target) {
 	equippedWeapon->makeAttack(target);
+}
+
+// Begins the turn for the Entity. Runs an onTurnStart effect, if there is one (otherwise does nothing).
+void Entity::beginTurn() {
+	if (onTurnStart != nullptr) {
+		onTurnStart();
+	}
+}
+
+// Ends the Entity's turn, passing it off to the TurnTracker `turnTracker`.
+void Entity::endTurn(TurnTracker* turnTracker) {
+	turnTracker->advanceTurnTracker();
 }
 
 // Writes the name of the Entity to an ostream. Alias for Entity::getName().
