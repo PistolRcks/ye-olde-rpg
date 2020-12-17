@@ -1,8 +1,8 @@
 #include "Entity.h"
 
-/*******************************
- * onTurnStart Effects (Brains *
- *******************************/
+/********************************
+ * onTurnStart Effects (Brains) *
+ ********************************/
 
 // An AI brain. This brain always attacks.
 void slasherBrain(Entity* parentEntity, Entity* enemy) {
@@ -27,6 +27,14 @@ void lazyBrain(Entity* parentEntity, Entity* enemy) {
 	cout << (*parentEntity) << " lazes around!" << endl;
 }
 
+// Create the array of function pointers
+void (*Entity::entityBrains[3])(Entity*, Entity*) = {
+	slasherBrain,
+	sluggishBrain,
+	lazyBrain
+};
+
+
 /*********************
  * Methods of Entity *
  *********************/
@@ -37,12 +45,13 @@ void lazyBrain(Entity* parentEntity, Entity* enemy) {
  * @param `Weapon*` weaponToEquip - The Weapon to equip to the Entity. (Optional)
  * @param `void (*func)(Entity*)` onTurnStartEffect - The function to call when the Entity starts its turn--most of the time, this will provide AI. The first parameter is the parent Entity of the effect, and the second is the enemy Entity. (Optional)
  */
-Entity::Entity(string name, int maxHP, Weapon* weaponToEquip, void (*onTurnStartEffect)(Entity*)) {
+Entity::Entity(string name, int maxHP, Weapon* weaponToEquip, void (*onTurnStartEffect)(Entity*, Entity*)) {
 	this->name = name;
 	this->maxHP = maxHP;
 	currentHP = maxHP;
 
 	equippedWeapon = weaponToEquip;
+	equippedWeapon->setBearer(this);
 
 	onTurnStart = onTurnStartEffect;
 }
@@ -130,10 +139,10 @@ void Entity::makeAttack(Entity* target) {
 	equippedWeapon->makeAttack(target);
 }
 
-// Begins the turn for the Entity. Runs an onTurnStart effect, if there is one (otherwise does nothing).
-void Entity::beginTurn() {
+// Begins the turn for the Entity. Runs an onTurnStart effect, if there is one (otherwise does nothing). Requires a enemy Entity.
+void Entity::beginTurn(Entity* enemy) {
 	if (onTurnStart != nullptr) {
-		onTurnStart(this);
+		onTurnStart(this, enemy);
 	}
 }
 

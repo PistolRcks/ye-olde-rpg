@@ -22,9 +22,9 @@ class Entity {
 friend ostream& operator<<(ostream& out, Entity& entity);
 
 // onTurnStart Effects (brains)
-friend void slasherBrain(Entity* parentEntity, Entity* enemy);
-friend void sluggishBrain(Entity* parentEntity, Entity* enemy);
-friend void lazyBrain(Entity* parentEntity, Entity* enemy);
+static friend void slasherBrain(Entity* parentEntity, Entity* enemy);
+static friend void sluggishBrain(Entity* parentEntity, Entity* enemy);
+static friend void lazyBrain(Entity* parentEntity, Entity* enemy);
 
 private:
 	string name;					// The name of the entity
@@ -36,7 +36,7 @@ private:
 	void (*onTurnStart)(Entity*, Entity*);	// A function pointer to the effect which will proc upon the start of a turn. The first parameter is the parent Entity of the effect, and the second is the enemy Entity.
 public:
 	// Constructors
-	Entity(string name, int maxHP, Weapon* weaponToEquip = nullptr, void (*onTurnStartEffect)(Entity*) = nullptr);
+	Entity(string name, int maxHP, Weapon* weaponToEquip = nullptr, void (*onTurnStartEffect)(Entity*, Entity*) = nullptr);
 	~Entity();
 
 	// Getters/Setters
@@ -55,15 +55,11 @@ public:
 
 	// Methods
 	void makeAttack(Entity* target);
-	void beginTurn();
+	void beginTurn(Entity* enemy);
 	void endTurn(TurnTracker* turnTracker);
 
-	// Static (for choosing brains in main)
-	static void (*entityBrains[3])(Entity*, Entity*) = {
-		slasherBrain,
-		sluggishBrain,
-		lazyBrain
-	}
+	// Statics (for choosing brains in main)
+	static void (*entityBrains[3])(Entity*, Entity*);
 };
 #endif
 

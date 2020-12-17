@@ -8,6 +8,24 @@ int maximum(int a, int b) { // I am not going to include another header for max(
  * WeaponEffects *
  *****************/
 
+// WeaponEffect default constructor. Sets string values to "" and the function to nullptr.
+WeaponEffect::WeaponEffect() {
+	effect = nullptr;
+	description = "";
+	target = "";
+}
+
+/* WeaponEffect normal constructor.
+ * @param `void (*func)(Weapon*, Entity*)` effect - The effect to trigger. The first parameter is the parent Weapon and the second is the targe Entity.
+ * @param `string` description - A description of the effect.
+ * @param `string` target - Defines whom the effect targets (either "self" or "opponent")
+ */
+WeaponEffect::WeaponEffect(void (*effect)(Weapon*, Entity*), string description, string target) {
+	this->effect = effect;
+	this->description = description;
+	this->target = target;
+}
+
 // This WeaponEffect heals the wielder for 5% of its maxHealth.
 void vampirismEffect(Weapon* parentWeapon, Entity* target) {
 	if ((rand() % 100) < 25) { // 25% chance to proc
@@ -32,6 +50,13 @@ void selfImprovementEffect(Weapon* parentWeapon, Entity* target) {
 	}
 }
 
+// Initialize all WeaponEffects
+WeaponEffect weaponEffectsArray[3] = {
+	WeaponEffect(vampirismEffect, "Has a 25% chance to heal the weapon's owner for 5% of their max health on-hit. (Vampirism)", "self"),
+	WeaponEffect(gigaCritEffect, "Has a 15% chance to deal max damage times four to a target on-hit. (GigaCrit)", "opponent"),
+	WeaponEffect(selfImprovementEffect, "Has a 5% chance to upgrade itself 1d10 times. (Self Improvement)", "self")
+
+};
 
 /*********************
  * Methods of Weapon * 
@@ -170,23 +195,6 @@ void Weapon::upgradeWeapon(int upgradeAmount) {
 		}
 	}
 }
-
-// Initializes WeaponEffects to the weaponEffectsArray (because I cannot for the life of me figure out how to use structs outside of function scope)
-void Weapon::initWeaponEffects() {
-	// Vampirism
-	weaponEffectsArray[0].effect = vampirismEffect;
-	weaponEffectsArray[0].description = "Has a 25% chance to heal the weapon's owner for 5% of their max health on-hit. (Vampirism)";
-
-	// GigaCrit
-	weaponEffectsArray[1].effect = gigaCritEffect;
-	weaponEffectsArray[1].description = "Has a 15% chance to deal max damage times four to a target on-hit. (GigaCrit)";
-	weaponEffectsArray[1].target = "opponent";
-
-	// Self Improvement
-	weaponEffectsArray[2].effect = selfImprovementEffect;
-	weaponEffectsArray[2].description = "Has a 5% chance to upgrade itself 1d10 times. (Self Improvement)";
-}
-
 
 /***************************
  * Other Friends of Weapon *

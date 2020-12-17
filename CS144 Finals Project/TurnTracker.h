@@ -15,13 +15,14 @@ private:
 	Entity* combatantA;
 	Entity* combatantB;
 	int combatantTurn = -1; // Which Combatant's turn it is (0 for A and 1 for B)
-	int turnNumber = 0;		// How many turns have passed
+	int turnNumber = 1;		// How many turns have passed
 	bool isInCombat = true;	// Whether it the Combatants are in combat or not
 public:
 	// Constructors
 	TurnTracker(Entity* combatantA, Entity* combatantB);
 
 	// Getters and Setters
+	int getCurrentCombatantIndex();
 	Entity* getNextTurnsCombatant();
 	bool isCombatOngoing();
 	void endCombat();
